@@ -1,4 +1,4 @@
-_*Sequence Alignment Algorithm*_
+**Sequence Alignment Algorithm**
 
 A program written in JAVA to implement two popular sequence alignment algorithms namely:
 
