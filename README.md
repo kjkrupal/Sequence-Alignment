@@ -1,4 +1,4 @@
-Sequence Alignment Algorithm
+_*Sequence Alignment Algorithm*_
 
 A program written in JAVA to implement two popular sequence alignment algorithms namely:
 
@@ -14,4 +14,5 @@ The input folder also contains two real world examples of gene sequences in FAST
 To run the program, open terminal and write following command
 
   javac Main.java
-  java Main *path to FASTA file* *0: Perform global alignment, 1: Perform local alignment* *path to parameters.config file*
+
+  java Main \*path to FASTA file* \*0: Perform global alignment, 1: Perform local alignment* \*path to parameters.config file*
