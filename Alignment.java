@@ -39,7 +39,7 @@ public class Alignment{
   }
 
   public void globalAlignment(Alignment alignment){
-    
+
     T[0][0] = new Cell(0, -999999,  -999999);
 
     for(int i = 1; i <= m; i++){
@@ -208,39 +208,98 @@ public class Alignment{
     int i = position[0];
     int j = position[1];
 
+    optimum_score = findMax(T[i][j].substitution_score, T[i][j].deletion_score, T[i][j].insertion_score);
 
-    while(true){
-      maximum = findMax(T[i][j].substitution_score, T[i][j].deletion_score, T[i][j].insertion_score);
-      if(findMax(T[i][j].substitution_score, T[i][j].deletion_score, T[i][j].insertion_score) == 0)
-        break;
+    int current_value = findMax(T[i][j].substitution_score, T[i][j].deletion_score, T[i][j].insertion_score);
 
-        if(maximum == (findMax(T[i][j-1].deletion_score + opening_gap_penalty + extension_gap_penalty,
-                               T[i][j-1].substitution_score + opening_gap_penalty + extension_gap_penalty,
-                               T[i][j-1].insertion_score + extension_gap_penalty))){
-          finalS1 = "-" + finalS1;
-          finalS2 = str2[j-1] + finalS2;
-          j--;
+    char direction = '-';
+
+    if(current_value == T[i][j].substitution_score) direction = 'S';
+    if(current_value == T[i][j].deletion_score) direction = 'D';
+    if(current_value == T[i][j].insertion_score) direction = 'I';
+
+    while(i > 0 && j > 0 && current_value != 0){
+
+      int temp_s;
+      int temp_d;
+      int temp_i;
+      //System.out.println("hi");
+
+      if(T[i][j].insertion_score == current_value && direction == 'I'){
+        finalS1 = "-" + finalS1;
+        finalS2 = str2[j-1] + finalS2;
+
+
+        temp_s = T[i][j - 1].substitution_score + opening_gap_penalty + extension_gap_penalty;
+        temp_d = T[i][j - 1].deletion_score + opening_gap_penalty + extension_gap_penalty;
+        temp_i = T[i][j - 1].insertion_score + extension_gap_penalty;
+
+        if(T[i][j].insertion_score == temp_s){
+          current_value = T[i][j - 1].substitution_score;
+          direction = 'S';
         }
-      else if(maximum == (findMax(T[i-1][j].deletion_score + extension_gap_penalty,
-                             T[i-1][j].substitution_score + opening_gap_penalty + extension_gap_penalty,
-                             T[i-1][j].insertion_score + opening_gap_penalty + extension_gap_penalty))){
+        else if(T[i][j].insertion_score == temp_d){
+          current_value = T[i][j - 1].deletion_score;
+          direction = 'D';
+        }
+        else{
+          current_value = T[i][j - 1].insertion_score;
+          direction = 'I';
+        }
+        j--;
+
+      }
+      else if(T[i][j].deletion_score == current_value && direction == 'D'){
         finalS1 = str1[i-1] + finalS1;
         finalS2 = "-" + finalS2;
+
+
+        temp_s = T[i - 1][j].substitution_score + opening_gap_penalty + extension_gap_penalty;
+        temp_d = T[i - 1][j].deletion_score + extension_gap_penalty;
+        temp_i = T[i - 1][j].insertion_score + opening_gap_penalty + extension_gap_penalty;
+
+        if(T[i][j].deletion_score == temp_s){
+          current_value = T[i - 1][j].substitution_score;
+          direction = 'S';
+        }
+        else if(T[i][j].deletion_score == temp_d){
+          current_value = T[i - 1][j].deletion_score;
+          direction = 'D';
+        }
+        else{
+          current_value = T[i - 1][j].insertion_score;
+          direction = 'I';
+        }
         i--;
+
       }
-      else if(maximum == (findMax(T[i-1][j-1].deletion_score,
-                             T[i-1][j-1].substitution_score,
-                             T[i-1][j-1].insertion_score) + S(str1[i-1], str2[j-1]))){
+      else{
         finalS1 = str1[i-1] + finalS1;
         finalS2 = str2[j-1] + finalS2;
+
+
+        temp_s = T[i - 1][j - 1].substitution_score + S(str1[i-1], str2[j-1]);
+        temp_d = T[i - 1][j - 1].deletion_score + S(str1[i-1], str2[j-1]);
+        temp_i = T[i - 1][j - 1].insertion_score + S(str1[i-1], str2[j-1]);
+
+        if(T[i][j].substitution_score == temp_s){
+          current_value = T[i - 1][j - 1].substitution_score;
+          direction = 'S';
+        }
+        else if(T[i][j].substitution_score == temp_d){
+          current_value = T[i - 1][j - 1].deletion_score;
+          direction = 'D';
+        }
+        else{
+          current_value = T[i - 1][j - 1].insertion_score;
+          direction = 'I';
+        }
         i--;
         j--;
       }
 
     }
-    i = position[0];
-    j = position[1];
-    optimum_score = findMax(T[i][j].substitution_score, T[i][j].deletion_score, T[i][j].insertion_score);
+
     generateReport();
   }
 
